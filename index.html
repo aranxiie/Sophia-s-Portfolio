@@ -168,8 +168,9 @@
       box-shadow: var(--shadow-paper);
       transition: transform 0.3s, z-index 0s;
       position: relative;
-      cursor: zoom-in;
+      cursor: pointer;
       border: 1px solid rgba(0,0,0,0.05);
+      overflow: hidden;
     }
 
     .item-card:nth-child(odd) { border-radius: 12px 12px 40px 12px; }
@@ -182,6 +183,28 @@
       border-color: var(--vermilion);
     }
 
+    /* Lock Overlay */
+    .item-card::after {
+      content: '🔒 Premium Content';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(93, 64, 55, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .item-card:hover::after {
+      opacity: 1;
+    }
+
     .item-img {
       width: 100%;
       height: auto;
@@ -191,7 +214,7 @@
       transition: 0.3s;
     }
     
-    .item-card:hover .item-img { filter: sepia(0); }
+    .item-card:hover .item-img { filter: sepia(0) blur(2px); }
 
     .sticker-label {
       text-align: center;
@@ -202,6 +225,88 @@
       font-family: 'Yuji Syuku';
     }
 
+    /* === PAYWALL MODAL STYLES === */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(93, 64, 55, 0.85);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .modal-overlay.active { display: flex; animation: zoomIn 0.3s; }
+
+    .modal-content {
+      background: var(--paper-bg);
+      padding: 2.5rem;
+      border-radius: 15px;
+      border: 4px solid var(--wood-dark);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      background-image: radial-gradient(var(--wood-light) 0.5px, transparent 0.5px);
+      background-size: 15px 15px;
+    }
+
+    .modal-content h3 {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 2rem;
+      color: var(--vermilion);
+      margin-bottom: 1rem;
+      border-bottom: 2px dashed var(--wood-light);
+      padding-bottom: 10px;
+      display: inline-block;
+    }
+
+    .modal-content p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      color: var(--wood-dark);
+    }
+
+    .modal-kofi-btn {
+      background: var(--vermilion);
+      color: white;
+      padding: 15px 35px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.3rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: 0.3s;
+      box-shadow: 4px 4px 0 var(--wood-dark);
+      border: 2px solid var(--wood-dark);
+    }
+
+    .modal-kofi-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--wood-dark);
+      background: #d64545;
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 10px; right: 15px;
+      background: none;
+      border: none;
+      font-size: 2.5rem;
+      color: var(--wood-light);
+      cursor: pointer;
+      font-family: 'Yuji Syuku', serif;
+      line-height: 1;
+    }
+    
+    .close-modal-btn:hover { color: var(--vermilion); }
+
+    /* Other Sections */
     .journal-container {
       background: var(--cream);
       max-width: 900px;
@@ -506,26 +611,6 @@
       color: white;
     }
 
-    .lightbox {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(93, 64, 55, 0.9);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-      cursor: zoom-out;
-      backdrop-filter: blur(5px);
-    }
-    .lightbox.active { display: flex; animation: zoomIn 0.3s; }
-    .lightbox-img {
-      max-width: 90%;
-      max-height: 90vh;
-      border: 10px solid white;
-      border-radius: 10px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    }
     @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
     footer { text-align: center; margin-top: 4rem; font-size: 0.9rem; color: var(--wood-light); }
@@ -548,8 +633,18 @@
 </head>
 <body>
 
-  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
-    <img id="lightbox-img" class="lightbox-img" src="" alt="Full view">
+
+  <div id="paywall-modal" class="modal-overlay">
+    <div class="modal-content">
+      <button class="close-modal-btn" onclick="closePaywallModal()">×</button>
+      <h3>🔒 Content Locked</h3>
+      <p>All artworks featured are created by their respective original artists and are not owned by me. I do not claim authorship of the illustrations used.</p>
+      <p>The graphic designs, layouts, and overall presentation are my original work, created as part of my commissioned services. These designs are not free to use. Access to these works is placed behind a paywall to protect the time, effort, and labor invested in the design process.</p>
+      
+      <a href="https://ko-fi.com/yunamira" target="_blank" class="modal-kofi-btn">
+        <span>☕ Unlock on Ko-fi</span>
+      </a>
+    </div>
   </div>
 
   <div class="noren-container">
@@ -578,87 +673,108 @@
 
     <section id="shelf-gallery" class="section-display active">
       <div class="masonry-grid">
-        <div class="item-card" onclick="openLightbox(this)">
+      
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/card_sunday (1).gif" class="item-img" alt="Sunday">
           <div class="sticker-label">Sunday Photocard</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/card.gif" class="item-img" alt="Robin">
           <div class="sticker-label">Robin Photocard</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/(OG Quality) TCG Card Contest OPL.gif" class="item-img" alt="TCG Contest">
           <div class="sticker-label">Kokomi, Raiden, & Baizhu Cover</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/furina_and_neuvi_opl_4.gif" class="item-img" alt="Furina">
           <div class="sticker-label">Furina & Neuvillette Cover</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/ET_OPL_EDIT-1.gif" class="item-img" alt="Zhongli">
           <div class="sticker-label">Zhongli Cover</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/kinich wiki cover.gif" class="item-img" alt="Kinich">
           <div class="sticker-label">Kinich Cover</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/kinich pfp gif.gif" class="item-img" alt="Kinich PFP">
           <div class="sticker-label">Kinich Profile</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/kinich Gif BG.gif" class="item-img" alt="Kinich BG">
           <div class="sticker-label">Kinich Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/kinich banner.gif" class="item-img" alt="Kinich Banner">
           <div class="sticker-label">Kinich Banner</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/Color_splash_opl.png" class="item-img" alt="Mualani">
           <div class="sticker-label">Mualani Cover</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/Divider TRIO.gif" class="item-img" alt="Divider">
           <div class="sticker-label">Scaramouche, Raiden, Thoma Divider</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/cover image.png" class="item-img" alt="Demon Slayer">
           <div class="sticker-label">Rengoku Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/HBH LOGO.png" class="item-img" alt="Hazbin">
           <div class="sticker-label">Hazbin Hotel Logo</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/HBH LOGO (1).png" class="item-img" alt="Lovers">
           <div class="sticker-label">Lovers Point Logo</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/LGBTQ LOGO.png" class="item-img" alt="Pride">
           <div class="sticker-label">LGBTQIA+ Fischl Logo</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/scaramouche.png" class="item-img" alt="Scara">
           <div class="sticker-label">Scaramouche Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/argenti bg gif 2.gif" class="item-img" alt="Argenti">
           <div class="sticker-label">Argenti Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/02 blade bg.png" class="item-img" alt="Blade">
           <div class="sticker-label">Blade Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/04 kafka bg.png" class="item-img" alt="Kafka">
           <div class="sticker-label">Kafka Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/bg dan heng.gif" class="item-img" alt="Dan Heng">
           <div class="sticker-label">Dan Heng Background</div>
         </div>
-        <div class="item-card" onclick="openLightbox(this)">
+        
+        <div class="item-card" onclick="openPaywallModal()">
           <img src="Portfolio images/06 jing yuan bg.png" class="item-img" alt="Jing Yuan">
           <div class="sticker-label">Jing Yuan Background</div>
         </div>
@@ -889,20 +1005,20 @@
       btn.classList.add('active');
     }
 
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
+    const paywallModal = document.getElementById('paywall-modal');
 
-    function openLightbox(element) {
-      const img = element.querySelector('img');
-      if (img) {
-        lightboxImg.src = img.src;
-        lightbox.classList.add('active');
-      }
+    function openPaywallModal() {
+      paywallModal.classList.add('active');
     }
 
-    function closeLightbox() {
-      lightbox.classList.remove('active');
+    function closePaywallModal() {
+      paywallModal.classList.remove('active');
     }
+
+    // Close on outside click
+    paywallModal.addEventListener('click', (e) => {
+      if (e.target === paywallModal) closePaywallModal();
+    });
   </script>
 
 </body>
