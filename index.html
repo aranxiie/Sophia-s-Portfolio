@@ -29,7 +29,6 @@
 
     body {
       background-color: var(--paper-bg);
-      /* Seigaiha (Wave) Pattern Overlay */
       background-image: radial-gradient(var(--wood-light) 0.5px, transparent 0.5px), radial-gradient(var(--wood-light) 0.5px, var(--paper-bg) 0.5px);
       background-size: 20px 20px;
       background-position: 0 0, 10px 10px;
@@ -471,6 +470,55 @@
     }
     .dl-btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--wood-dark); }
 
+    /* === KO-FI WIDGET (FLOATING BUTTON) === */
+    .kofi-float {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      z-index: 1000;
+      background: var(--vermilion);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.1rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      border: 3px solid white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .kofi-float:hover {
+      transform: scale(1.1) rotate(-2deg);
+      background: #e64d4d;
+    }
+
+    .kofi-icon {
+      font-size: 1.3rem;
+    }
+
+    /* Inline Ko-fi Button for About Section */
+    .kofi-inline-btn {
+      display: inline-block;
+      margin-top: 20px;
+      background: #fff;
+      color: var(--vermilion);
+      border: 2px solid var(--vermilion);
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'Yuji Syuku', serif;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+    .kofi-inline-btn:hover {
+      background: var(--vermilion);
+      color: white;
+    }
+
     /* === LIGHTBOX OVERLAY === */
     .lightbox {
       display: none;
@@ -505,6 +553,7 @@
       .resume-grid { grid-template-columns: 1fr; }
       .res-sidebar { border-right: none; border-bottom: 2px dashed var(--wood-light); }
       .res-header { flex-direction: column; text-align: center; padding-bottom: 3rem; }
+      .kofi-float { bottom: 15px; right: 15px; padding: 10px 20px; font-size: 1rem; }
     }
     @media (max-width: 600px) { 
       .masonry-grid { column-count: 1; } 
@@ -696,6 +745,15 @@
             <div class="qa-question">What’s my work style?</div>
             <p>I can work independently or as part of a team. I aim to be friendly, approachable, and professional, so collaboration is smooth and enjoyable.</p>
           </div>
+
+          <!-- Ko-fi Inline Button -->
+          <div class="qa-block" style="text-align:center; border-top: 2px dashed var(--wood-light); padding-top: 20px;">
+             <p>Like my work? Consider supporting me!</p>
+             <a href="https://ko-fi.com/yunamira" target="_blank" class="kofi-inline-btn">
+               ☕ Support My Art on Ko-fi
+             </a>
+          </div>
+
         </div>
 
       </div>
@@ -870,6 +928,12 @@
     </section>
 
   </main>
+
+  <!-- FLOATING KO-FI BUTTON -->
+  <a href="https://ko-fi.com/yunamira" target="_blank" class="kofi-float">
+    <span class="kofi-icon">☕</span>
+    <span>Buy me a Coffee</span>
+  </a>
 
   <footer>
     <p>© 2025 Sophia's Design Collections</p>
