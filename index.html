@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOPHIA'S ART SHOP</title>
+  
+  <!-- Fonts: Yuji Syuku (Brush), M PLUS Rounded 1c (Cute/Readable) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Yuji+Syuku&family=M+PLUS+Rounded+1c:wght@400;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      /* Palette: Japanese Zakka Shop */
+      --paper-bg: #f9f4ef;
+      --wood-dark: #5d4037;
+      --wood-light: #8d6e63;
+      --vermilion: #c93a3a; /* Traditional Red */
+      --matcha: #7cb342;
+      --gold-accent: #e6b422;
+      --cream: #fffdf5;
+      
+      /* Effects */
+      --shadow-paper: 4px 4px 0px rgba(93, 64, 55, 0.2);
+      --shadow-float: 0 10px 25px rgba(93, 64, 55, 0.15);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--paper-bg);
+      /* Seigaiha (Wave) Pattern Overlay */
+      background-image: radial-gradient(var(--wood-light) 0.5px, transparent 0.5px), radial-gradient(var(--wood-light) 0.5px, var(--paper-bg) 0.5px);
+      background-size: 20px 20px;
+      background-position: 0 0, 10px 10px;
+      color: var(--wood-dark);
+      font-family: 'M PLUS Rounded 1c', sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+      padding-bottom: 5rem;
+    }
+
+    /* === DECORATIVE NOREN (Shop Curtains) === */
+    .noren-container {
+      position: fixed;
+      top: 0; left: 0; width: 100%;
+      height: 60px;
+      z-index: 100;
+      display: flex;
+      justify-content: space-evenly;
+      pointer-events: none;
+    }
+
+    .noren-panel {
+      width: 18%;
+      height: 100%;
+      background-color: var(--vermilion);
+      border-radius: 0 0 5px 5px;
+      position: relative;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+      transform-origin: top center;
+      animation: wind 6s ease-in-out infinite;
+    }
+
+    .noren-panel:nth-child(even) { background-color: var(--wood-dark); animation-delay: 1s; }
+    .noren-panel::after {
+      content: '✿';
+      position: absolute;
+      bottom: 10px; left: 50%; transform: translateX(-50%);
+      color: var(--paper-bg);
+      font-size: 1.2rem;
+    }
+
+    @keyframes wind {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2deg); }
+    }
+
+    /* === HEADER & SIGNBOARD === */
+    .shop-header {
+      text-align: center;
+      margin-top: 5rem;
+      margin-bottom: 2rem;
+    }
+
+    .signboard {
+      display: inline-block;
+      border: 4px solid var(--wood-dark);
+      padding: 1.5rem 3rem;
+      background: var(--cream);
+      box-shadow: 8px 8px 0 var(--vermilion);
+      border-radius: 15px;
+      transform: rotate(-2deg);
+      transition: 0.3s;
+    }
+    
+    .signboard:hover { transform: rotate(0deg) scale(1.05); }
+
+    h1 {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 3.5rem;
+      color: var(--wood-dark);
+      margin: 0;
+      line-height: 1;
+    }
+
+    .subtitle {
+      display: block;
+      margin-top: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--vermilion);
+      text-transform: uppercase;
+      font-size: 0.9rem;
+    }
+
+    /* === WOODEN NAVIGATION === */
+    .wood-nav {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-tag {
+      background: var(--wood-dark);
+      color: var(--paper-bg);
+      padding: 1rem 2.5rem;
+      border: none;
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.3rem;
+      cursor: pointer;
+      border-radius: 50px;
+      transition: 0.3s;
+      position: relative;
+      box-shadow: 0 5px 0 var(--wood-light);
+    }
+
+    .nav-tag:active { transform: translateY(5px); box-shadow: none; }
+    .nav-tag.active { background: var(--vermilion); color: white; transform: translateY(2px); box-shadow: 0 3px 0 #8a2626; }
+    
+    .nav-tag::before {
+      content: '';
+      position: absolute;
+      top: -15px; left: 50%; width: 2px; height: 15px;
+      background: #aaa;
+      z-index: -1;
+    }
+
+    /* === MAIN CONTENT === */
+    .shop-floor {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      min-height: 60vh;
+    }
+
+    .section-display { display: none; animation: fadeIn 0.6s ease; }
+    .section-display.active { display: block; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* --- MASONRY GALLERY (The Shelves) --- */
+    .masonry-grid {
+      column-count: 3;
+      column-gap: 20px;
+    }
+
+    .item-card {
+      break-inside: avoid;
+      margin-bottom: 20px;
+      background: white;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: var(--shadow-paper);
+      transition: transform 0.3s, z-index 0s;
+      position: relative;
+      cursor: zoom-in;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .item-card:nth-child(odd) { border-radius: 12px 12px 40px 12px; }
+    .item-card:nth-child(even) { border-radius: 40px 12px 12px 12px; }
+
+    .item-card:hover {
+      transform: scale(1.03) rotate(1deg);
+      z-index: 10;
+      box-shadow: var(--shadow-float);
+      border-color: var(--vermilion);
+    }
+
+    .item-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 8px;
+      filter: sepia(10%);
+      transition: 0.3s;
+    }
+    
+    .item-card:hover .item-img { filter: sepia(0); }
+
+    .sticker-label {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      color: var(--wood-dark);
+      font-family: 'Yuji Syuku';
+    }
+
+    /* --- ABOUT & JOURNAL STYLES --- */
+    .journal-container {
+      background: var(--cream);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3rem;
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      border-left: 15px solid var(--vermilion); /* Binding look */
+    }
+
+    .journal-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px dashed var(--wood-light);
+      padding-bottom: 2rem;
+    }
+
+    .journal-pic {
+      width: 150px; height: 150px;
+      min-width: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 5px solid white;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .journal-title h2 {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 2.2rem;
+      color: var(--vermilion);
+      margin-bottom: 10px;
+    }
+
+    .journal-title p {
+      font-style: italic;
+      color: var(--wood-light);
+    }
+
+    .journal-content {
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+
+    .qa-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .qa-question {
+      font-weight: bold;
+      color: var(--wood-dark);
+      font-family: 'Yuji Syuku';
+      font-size: 1.2rem;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .qa-question::before {
+      content: '❀';
+      color: var(--vermilion);
+    }
+
+    /* === FAQ / Q&A CARDS === */
+    .faq-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 25px;
+      padding-top: 20px;
+    }
+
+    .faq-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 4px;
+      box-shadow: var(--shadow-paper);
+      position: relative;
+      border-top: 10px solid rgba(201, 58, 58, 0.2);
+    }
+    
+    .faq-card::before {
+      /* Pin Effect */
+      content: '';
+      position: absolute;
+      top: -15px; left: 50%; transform: translateX(-50%);
+      width: 15px; height: 15px;
+      border-radius: 50%;
+      background: var(--wood-dark);
+      box-shadow: inset -2px -2px 0 rgba(0,0,0,0.3);
+    }
+
+    .faq-q {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.3rem;
+      color: var(--vermilion);
+      margin-bottom: 15px;
+      border-bottom: 1px dashed #ddd;
+      padding-bottom: 10px;
+    }
+
+    .faq-a {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--wood-dark);
+    }
+
+    /* === RESUME BOARD === */
+    .resume-board {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .resume-paper {
+      background: var(--cream);
+      padding: 0;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 4px;
+    }
+
+    .washi-tape {
+      position: absolute;
+      top: -15px; left: 50%; transform: translateX(-50%);
+      width: 150px; height: 35px;
+      background: rgba(201, 58, 58, 0.7);
+      opacity: 0.8;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+      transform: translateX(-50%) rotate(-1deg);
+    }
+
+    .res-header {
+      background: var(--wood-dark);
+      color: var(--cream);
+      padding: 3rem 2rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      position: relative;
+    }
+
+    .res-header::after {
+      content: '';
+      position: absolute;
+      bottom: -20px; left: 0; width: 100%; height: 40px;
+      background: var(--cream);
+      border-radius: 50% 50% 0 0;
+    }
+
+    .res-avatar {
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      border: 4px solid var(--cream);
+      object-fit: cover;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .res-title h2 {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 2.8rem;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .res-title span {
+      font-size: 1.2rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    .res-contact {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      font-size: 0.8rem;
+      margin-top: 15px;
+      opacity: 0.8;
+    }
+
+    .res-contact div { display: flex; align-items: center; gap: 5px; }
+
+    .resume-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      min-height: 800px;
+    }
+
+    .res-sidebar {
+      background-color: #f0e6dd;
+      padding: 3rem 2rem;
+      border-right: 2px dashed var(--wood-light);
+    }
+
+    .res-main {
+      padding: 3rem 2rem;
+      background-color: white;
+    }
+
+    .res-section { margin-bottom: 2.5rem; }
+
+    .res-heading {
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.5rem;
+      color: var(--vermilion);
+      border-bottom: 2px solid var(--wood-light);
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      display: inline-block;
+    }
+
+    .res-item { margin-bottom: 15px; position: relative; }
+    .res-item h4 { font-size: 1.1rem; color: var(--wood-dark); margin-bottom: 2px; }
+    .res-item .date { font-size: 0.85rem; font-style: italic; color: var(--wood-light); margin-bottom: 5px; display: block; }
+    .res-item p { font-size: 0.95rem; line-height: 1.5; }
+
+    .res-list { list-style: none; }
+    .res-list li { 
+      margin-bottom: 8px; 
+      padding-left: 15px; 
+      position: relative; 
+      font-size: 0.95rem;
+    }
+    .res-list li::before { content: '•'; color: var(--vermilion); position: absolute; left: 0; }
+
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tag {
+      background: white;
+      border: 1px solid var(--wood-light);
+      padding: 4px 10px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      color: var(--wood-dark);
+    }
+
+    .download-section { text-align: center; margin-top: 3rem; }
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--vermilion);
+      color: white;
+      padding: 1rem 3rem;
+      font-family: 'Yuji Syuku', serif;
+      font-size: 1.2rem;
+      text-decoration: none;
+      border-radius: 5px;
+      box-shadow: 4px 4px 0 var(--wood-dark);
+      transition: 0.2s;
+      border: 2px solid var(--wood-dark);
+    }
+    .dl-btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--wood-dark); }
+
+    /* === LIGHTBOX OVERLAY === */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(93, 64, 55, 0.9);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      cursor: zoom-out;
+      backdrop-filter: blur(5px);
+    }
+    .lightbox.active { display: flex; animation: zoomIn 0.3s; }
+    .lightbox-img {
+      max-width: 90%;
+      max-height: 90vh;
+      border: 10px solid white;
+      border-radius: 10px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* FOOTER */
+    footer { text-align: center; margin-top: 4rem; font-size: 0.9rem; color: var(--wood-light); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) { .masonry-grid { column-count: 2; } }
+    @media (max-width: 768px) {
+      .bio-flex { flex-direction: column; text-align: center; }
+      .journal-header { flex-direction: column; text-align: center; }
+      .resume-grid { grid-template-columns: 1fr; }
+      .res-sidebar { border-right: none; border-bottom: 2px dashed var(--wood-light); }
+      .res-header { flex-direction: column; text-align: center; padding-bottom: 3rem; }
+    }
+    @media (max-width: 600px) { 
+      .masonry-grid { column-count: 1; } 
+      h1 { font-size: 2.5rem; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- LIGHTBOX (Hidden by default) -->
+  <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+    <img id="lightbox-img" class="lightbox-img" src="" alt="Full view">
+  </div>
+
+  <!-- DECORATIVE CURTAINS -->
+  <div class="noren-container">
+    <div class="noren-panel"></div>
+    <div class="noren-panel"></div>
+    <div class="noren-panel"></div>
+    <div class="noren-panel"></div>
+    <div class="noren-panel"></div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="shop-header">
+    <div class="signboard">
+      <h1>Sophia's Collections</h1>
+      <span class="subtitle">Graphic Designs</span>
+    </div>
+  </header>
+
+  <!-- NAVIGATION -->
+  <nav class="wood-nav">
+    <button class="nav-tag active" onclick="switchShelf('shelf-gallery', this)">Gallery</button>
+    <button class="nav-tag" onclick="switchShelf('shelf-about', this)">About Me</button>
+    <button class="nav-tag" onclick="switchShelf('shelf-resume', this)">Resume</button>
+    <button class="nav-tag" onclick="switchShelf('shelf-faq', this)">Q & A Corner</button>
+  </nav>
+
+  <!-- MAIN SHOP FLOOR -->
+  <main class="shop-floor">
+
+    <!-- SHELF 1: GALLERY (MASONRY GRID) -->
+    <section id="shelf-gallery" class="section-display active">
+      <div class="masonry-grid">
+        <!-- CARD 1 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\card_sunday (1).gif" class="item-img" alt="Sunday">
+          <div class="sticker-label">Sunday Photocard</div>
+        </div>
+        <!-- CARD 2 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\card.gif" class="item-img" alt="Robin">
+          <div class="sticker-label">Robin Photocard</div>
+        </div>
+        <!-- WIDE BANNER 1 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\(OG Quality) TCG Card Contest OPL.gif" class="item-img" alt="TCG Contest">
+          <div class="sticker-label">Kokomi, Raiden, & Baizhu Cover</div>
+        </div>
+        <!-- CARD 3 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\furina_and_neuvi_opl_4.gif" class="item-img" alt="Furina">
+          <div class="sticker-label">Furina & Neuvillette Cover</div>
+        </div>
+        <!-- CARD 4 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\ET_OPL_EDIT-1.gif" class="item-img" alt="Zhongli">
+          <div class="sticker-label">Zhongli Cover</div>
+        </div>
+        <!-- CARD 5 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\kinich wiki cover.gif" class="item-img" alt="Kinich">
+          <div class="sticker-label">Kinich Cover</div>
+        </div>
+        <!-- SMALL SQUARE -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\kinich pfp gif.gif" class="item-img" alt="Kinich PFP">
+          <div class="sticker-label">Kinich Profile</div>
+        </div>
+        <!-- CARD 6 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\kinich Gif BG.gif" class="item-img" alt="Kinich BG">
+          <div class="sticker-label">Kinich Background</div>
+        </div>
+        <!-- WIDE BANNER 2 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\kinich banner.gif" class="item-img" alt="Kinich Banner">
+          <div class="sticker-label">Kinich Banner</div>
+        </div>
+        <!-- CARD 7 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\Color_splash_opl.png" class="item-img" alt="Mualani">
+          <div class="sticker-label">Mualani Cover</div>
+        </div>
+        <!-- WIDE DIVIDER -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\Divider TRIO.gif" class="item-img" alt="Divider">
+          <div class="sticker-label">Scaramouche, Raiden, Thoma Divider</div>
+        </div>
+        <!-- CARD 8 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\cover image.png" class="item-img" alt="Demon Slayer">
+          <div class="sticker-label">Rengoku Background</div>
+        </div>
+        <!-- LOGO 1 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\HBH LOGO.png" class="item-img" alt="Hazbin">
+          <div class="sticker-label">Hazbin Hotel Logo</div>
+        </div>
+        <!-- LOGO 2 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\HBH LOGO (1).png" class="item-img" alt="Lovers">
+          <div class="sticker-label">Lovers Point Logo</div>
+        </div>
+        <!-- LOGO 3 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\LGBTQ LOGO.png" class="item-img" alt="Pride">
+          <div class="sticker-label">LGBTQIA+ Fischl Logo</div>
+        </div>
+        <!-- CARD 9 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\scaramouche.png" class="item-img" alt="Scara">
+          <div class="sticker-label">Scaramouche Background</div>
+        </div>
+        <!-- BANNER 3 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\argenti bg gif 2.gif" class="item-img" alt="Argenti">
+          <div class="sticker-label">Argenti Background</div>
+        </div>
+        <!-- BANNER 4 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\02 blade bg.png" class="item-img" alt="Blade">
+          <div class="sticker-label">Blade Background</div>
+        </div>
+        <!-- BANNER 5 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\04 kafka bg.png" class="item-img" alt="Kafka">
+          <div class="sticker-label">Kafka Background</div>
+        </div>
+        <!-- BANNER 6 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\bg dan heng.gif" class="item-img" alt="Dan Heng">
+          <div class="sticker-label">Dan Heng Background</div>
+        </div>
+        <!-- BANNER 7 -->
+        <div class="item-card" onclick="openLightbox(this)">
+          <img src="C:\Users\sahag\Downloads\06 jing yuan bg.png" class="item-img" alt="Jing Yuan">
+          <div class="sticker-label">Jing Yuan Background</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHELF 2: ABOUT ME (Shop Journal Style) -->
+    <section id="shelf-about" class="section-display">
+      <div class="journal-container">
+        
+        <div class="journal-header">
+          <img src="C:\Users\sahag\Downloads\Untitled design (5).png" class="journal-pic" alt="Sophia">
+          <div class="journal-title">
+            <h2>Hi! I’m Sophia.</h2>
+            <p>Welcome to my page.</p>
+          </div>
+        </div>
+
+        <div class="journal-content">
+          <div class="qa-block">
+            <p>I’m a freelance graphic designer, passionate about creating visually appealing designs for social media, branding, and simple web layouts. I take pride in my attention to detail, staying organized, and adapting quickly to new projects.</p>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">What do I specialize in?</div>
+            <p>I focus on static and motion graphics, social media content, and basic web design. My goal is to create strong visuals that match your brand and vision.</p>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">What tools do I use?</div>
+            <p>I work with <b>Adobe Photoshop, Canva, CapCut</b>, and <b>Visual Studio Code</b>. This lets me create both static images and animated visuals, as well as simple website layouts.</p>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">How do I work with clients?</div>
+            <p>I like to get to know your needs and preferences first. I make sure to communicate clearly, respect deadlines, and deliver designs that meet your expectations.</p>
+          </div>
+
+          <div class="qa-block">
+            <div class="qa-question">What’s my work style?</div>
+            <p>I can work independently or as part of a team. I aim to be friendly, approachable, and professional, so collaboration is smooth and enjoyable.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SHELF 3: RESUME -->
+    <section id="shelf-resume" class="section-display">
+      <div class="resume-board">
+        <div class="washi-tape"></div>
+        <div class="resume-paper">
+          
+          <!-- Resume Header -->
+          <div class="res-header">
+            <img src="C:\Users\sahag\Downloads\Untitled design (5).png" class="res-avatar" alt="Sophia">
+            <div class="res-title">
+              <h2>Sophia Rodina G. Sahagun</h2>
+              <span>Graphic Designer</span>
+              <div class="res-contact">
+                <div>📞 +63 930 011 8538</div>
+                <div>📧 sahagunsophiarodina@gmail.com</div>
+                <div>🌐 www.reallygreatsite.com</div>
+                <div>🏠 Las Piñas City</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Resume Grid -->
+          <div class="resume-grid">
+            <aside class="res-sidebar">
+              <div class="res-section">
+                <h3 class="res-heading">Education</h3>
+                <div class="res-item">
+                  <h4>College</h4>
+                  <span class="date">2025 - present</span>
+                  <p>Southville International School and Colleges</p>
+                </div>
+                <div class="res-item">
+                  <h4>Senior High School</h4>
+                  <span class="date">2023 - 2024</span>
+                  <p>Asian SEED Academy of Technology</p>
+                </div>
+                <div class="res-item">
+                  <h4>High School Diploma</h4>
+                  <span class="date">2019 - 2022</span>
+                  <p>Mary Immaculate School Inc. Parañaque</p>
+                </div>
+              </div>
+              <div class="res-section">
+                <h3 class="res-heading">Expertise</h3>
+                <ul class="res-list">
+                  <li>Graphic Design (Static & Motion)</li>
+                  <li>Web Design (Basic Layouts)</li>
+                  <li>Social Media Content Creation</li>
+                  <li>Image & Video Editing</li>
+                  <li>Organization & Time Management</li>
+                  <li>Basic Project Management</li>
+                  <li>Verbal & Written Communication</li>
+                </ul>
+              </div>
+              <div class="res-section">
+                <h3 class="res-heading">Language</h3>
+                <div class="skill-tags">
+                  <span class="skill-tag">English</span>
+                  <span class="skill-tag">Japanese</span>
+                  <span class="skill-tag">Chinese</span>
+                </div>
+              </div>
+            </aside>
+            <article class="res-main">
+              <div class="res-section">
+                <h3 class="res-heading">About Me</h3>
+                <p>I am a responsible, honest, and well-organized individual with a strong eye for detail and passion for graphic and web design. I take pride in creating visually appealing, and well-structured designs.</p>
+                <br>
+                <p>I have experience working as a <b>freelance graphic designer</b>, creating social media content, banners, backgrounds, and website visuals. I am proficient in tools such as Adobe Photoshop, Canva, CapCut, and Visual Studio Code.</p>
+                <br>
+                <p>I adapt quickly to new environments and am able to work efficiently both independently and as part of a team.</p>
+              </div>
+              <div class="res-section">
+                <h3 class="res-heading">Experience</h3>
+                <div class="res-item">
+                  <h4>Freelance Graphic Designer</h4>
+                  <span class="date">2020 - present</span>
+                  <ul class="res-list">
+                    <li>Designed visual content for social media platforms, including post covers (static and animated), profile graphics, banners, backgrounds, dividers, and promotional materials.</li>
+                    <li>Worked closely with clients to understand their design needs and deliver visually appealing and on-brand content.</li>
+                    <li>Managed multiple design tasks while meeting deadlines and maintaining consistent quality.</li>
+                  </ul>
+                </div>
+                <div class="res-item">
+                  <h4>Freelance Web Designer</h4>
+                  <span class="date">2023 - present</span>
+                  <ul class="res-list">
+                    <li>Created website visuals and basic layouts using tools such as Visual Studio Code, Canva, Google Sites, and Carrd.</li>
+                    <li>Designed web assets including headers, banners, and page layouts to improve visual presentation and user experience.</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="res-section">
+                <h3 class="res-heading">Reference</h3>
+                <div class="res-item">
+                  <h4>Maria Janita Gorero</h4>
+                  <p>Bank of the Philippines Islands (BPI) | Team Leader</p>
+                  <p style="color:var(--vermilion); font-weight:bold; margin-top:5px;">+63 946 417 2241</p>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+        <div class="download-section">
+          <a href="resume.pdf" class="dl-btn" download>📥 Download PDF</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- SHELF 4: FAQs (Card Board Style) -->
+    <section id="shelf-faq" class="section-display">
+      <div style="text-align:center; margin-bottom: 2rem;">
+        <h2 style="font-family:'Yuji Syuku'; color:var(--wood-dark); font-size: 2.5rem;">❓ Frequently Asked Questions</h2>
+      </div>
+      
+      <div class="faq-grid">
+        
+        <!-- FAQ 1 -->
+        <div class="faq-card">
+          <div class="faq-q">What services do you offer?</div>
+          <div class="faq-a">I create social media posts, banners, covers, profile graphics, backgrounds, dividers, logos, and basic website visuals and layouts.</div>
+        </div>
+
+        <!-- FAQ 2 -->
+        <div class="faq-card">
+          <div class="faq-q">Do you do animated designs?</div>
+          <div class="faq-a">Yes! I can make motion graphics and animated social media visuals in addition to static designs.</div>
+        </div>
+
+        <!-- FAQ 3 -->
+        <div class="faq-card">
+          <div class="faq-q">Are you experienced with web design?</div>
+          <div class="faq-a">I have experience creating simple website layouts and visuals using tools like Visual Studio Code, Canva, Google Sites, and Carrd.</div>
+        </div>
+
+        <!-- FAQ 4 -->
+        <div class="faq-card">
+          <div class="faq-q">Can you handle multiple projects at once?</div>
+          <div class="faq-a">Yes! I’m used to managing multiple tasks while keeping deadlines and quality in check.</div>
+        </div>
+
+        <!-- FAQ 5 -->
+        <div class="faq-card">
+          <div class="faq-q">Do you accept freelance projects?</div>
+          <div class="faq-a">Absolutely! I’ve been working as a freelance graphic designer since 2020 and continue to welcome new freelance opportunities.</div>
+        </div>
+
+        <!-- FAQ 6 -->
+        <div class="faq-card">
+          <div class="faq-q">What industries or platforms do you design for?</div>
+          <div class="faq-a">I mainly design for digital platforms, especially social media and online branding, but I can adapt my skills to other visual design needs as well.</div>
+        </div>
+
+        <!-- FAQ 7 -->
+        <div class="faq-card">
+          <div class="faq-q">How do you ensure quality in your work?</div>
+          <div class="faq-a">I pay close attention to detail, follow clear design structures, and communicate with clients throughout the process to make sure everything meets expectations.</div>
+        </div>
+
+        <!-- FAQ 8 -->
+        <div class="faq-card">
+          <div class="faq-q">What languages do you speak?</div>
+          <div class="faq-a">I speak English and have some knowledge of Japanese and Chinese.</div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2025 Sophia's Design Collections</p>
+  </footer>
+
+  <script>
+    // Navigation Logic
+    function switchShelf(shelfId, btn) {
+      document.querySelectorAll('.section-display').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-tag').forEach(el => el.classList.remove('active'));
+      
+      document.getElementById(shelfId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // Lightbox Logic
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+
+    function openLightbox(element) {
+      // Find the image inside the clicked card
+      const img = element.querySelector('img');
+      if (img) {
+        lightboxImg.src = img.src;
+        lightbox.classList.add('active');
+      }
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+    }
+  </script>
+
+</body>
+</html>
