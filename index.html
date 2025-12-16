@@ -11,16 +11,14 @@
   
   <style>
     :root {
-      /* Palette: Japanese Zakka Shop */
       --paper-bg: #f9f4ef;
       --wood-dark: #5d4037;
       --wood-light: #8d6e63;
-      --vermilion: #c93a3a; /* Traditional Red */
+      --vermilion: #c93a3a;
       --matcha: #7cb342;
       --gold-accent: #e6b422;
       --cream: #fffdf5;
       
-      /* Effects */
       --shadow-paper: 4px 4px 0px rgba(93, 64, 55, 0.2);
       --shadow-float: 0 10px 25px rgba(93, 64, 55, 0.15);
     }
@@ -39,7 +37,6 @@
       padding-bottom: 5rem;
     }
 
-    /* === DECORATIVE NOREN (Shop Curtains) === */
     .noren-container {
       position: fixed;
       top: 0; left: 0; width: 100%;
@@ -75,7 +72,6 @@
       50% { transform: rotate(2deg); }
     }
 
-    /* === HEADER & SIGNBOARD === */
     .shop-header {
       text-align: center;
       margin-top: 5rem;
@@ -113,7 +109,6 @@
       font-size: 0.9rem;
     }
 
-    /* === WOODEN NAVIGATION === */
     .wood-nav {
       display: flex;
       justify-content: center;
@@ -147,7 +142,6 @@
       z-index: -1;
     }
 
-    /* === MAIN CONTENT === */
     .shop-floor {
       max-width: 1200px;
       margin: 0 auto;
@@ -160,7 +154,6 @@
 
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* --- MASONRY GALLERY (The Shelves) --- */
     .masonry-grid {
       column-count: 3;
       column-gap: 20px;
@@ -209,7 +202,6 @@
       font-family: 'Yuji Syuku';
     }
 
-    /* --- ABOUT & JOURNAL STYLES --- */
     .journal-container {
       background: var(--cream);
       max-width: 900px;
@@ -218,7 +210,7 @@
       border-radius: 10px;
       position: relative;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      border-left: 15px solid var(--vermilion); /* Binding look */
+      border-left: 15px solid var(--vermilion);
     }
 
     .journal-header {
@@ -276,7 +268,6 @@
       color: var(--vermilion);
     }
 
-    /* === FAQ / Q&A CARDS === */
     .faq-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -294,7 +285,6 @@
     }
     
     .faq-card::before {
-      /* Pin Effect */
       content: '';
       position: absolute;
       top: -15px; left: 50%; transform: translateX(-50%);
@@ -319,7 +309,6 @@
       color: var(--wood-dark);
     }
 
-    /* === RESUME BOARD === */
     .resume-board {
       max-width: 1000px;
       margin: 0 auto;
@@ -470,7 +459,6 @@
     }
     .dl-btn:hover { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--wood-dark); }
 
-    /* === KO-FI WIDGET (FLOATING BUTTON) === */
     .kofi-float {
       position: fixed;
       bottom: 25px;
@@ -500,7 +488,6 @@
       font-size: 1.3rem;
     }
 
-    /* Inline Ko-fi Button for About Section */
     .kofi-inline-btn {
       display: inline-block;
       margin-top: 20px;
@@ -519,7 +506,6 @@
       color: white;
     }
 
-    /* === LIGHTBOX OVERLAY === */
     .lightbox {
       display: none;
       position: fixed;
@@ -542,10 +528,8 @@
     }
     @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-    /* FOOTER */
     footer { text-align: center; margin-top: 4rem; font-size: 0.9rem; color: var(--wood-light); }
 
-    /* RESPONSIVE */
     @media (max-width: 900px) { .masonry-grid { column-count: 2; } }
     @media (max-width: 768px) {
       .bio-flex { flex-direction: column; text-align: center; }
@@ -564,12 +548,10 @@
 </head>
 <body>
 
-  <!-- LIGHTBOX (Hidden by default) -->
   <div id="lightbox" class="lightbox" onclick="closeLightbox()">
     <img id="lightbox-img" class="lightbox-img" src="" alt="Full view">
   </div>
 
-  <!-- DECORATIVE CURTAINS -->
   <div class="noren-container">
     <div class="noren-panel"></div>
     <div class="noren-panel"></div>
@@ -578,7 +560,6 @@
     <div class="noren-panel"></div>
   </div>
 
-  <!-- HEADER -->
   <header class="shop-header">
     <div class="signboard">
       <h1>Sophia's Collections</h1>
@@ -586,7 +567,6 @@
     </div>
   </header>
 
-  <!-- NAVIGATION -->
   <nav class="wood-nav">
     <button class="nav-tag active" onclick="switchShelf('shelf-gallery', this)">Gallery</button>
     <button class="nav-tag" onclick="switchShelf('shelf-about', this)">About Me</button>
@@ -594,114 +574,90 @@
     <button class="nav-tag" onclick="switchShelf('shelf-faq', this)">Q & A Corner</button>
   </nav>
 
-  <!-- MAIN SHOP FLOOR -->
   <main class="shop-floor">
 
-    <!-- SHELF 1: GALLERY (MASONRY GRID) -->
     <section id="shelf-gallery" class="section-display active">
       <div class="masonry-grid">
-        <!-- CARD 1 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/card_sunday (1).gif" class="item-img" alt="Sunday">
-      
           <div class="sticker-label">Sunday Photocard</div>
         </div>
-        <!-- CARD 2 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/card.gif" class="item-img" alt="Robin">
           <div class="sticker-label">Robin Photocard</div>
         </div>
-        <!-- WIDE BANNER 1 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/(OG Quality) TCG Card Contest OPL.gif" class="item-img" alt="TCG Contest">
           <div class="sticker-label">Kokomi, Raiden, & Baizhu Cover</div>
         </div>
-        <!-- CARD 3 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/furina_and_neuvi_opl_4.gif" class="item-img" alt="Furina">
           <div class="sticker-label">Furina & Neuvillette Cover</div>
         </div>
-        <!-- CARD 4 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/ET_OPL_EDIT-1.gif" class="item-img" alt="Zhongli">
           <div class="sticker-label">Zhongli Cover</div>
         </div>
-        <!-- CARD 5 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/kinich wiki cover.gif" class="item-img" alt="Kinich">
           <div class="sticker-label">Kinich Cover</div>
         </div>
-        <!-- SMALL SQUARE -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/kinich pfp gif.gif" class="item-img" alt="Kinich PFP">
           <div class="sticker-label">Kinich Profile</div>
         </div>
-        <!-- CARD 6 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/kinich Gif BG.gif" class="item-img" alt="Kinich BG">
           <div class="sticker-label">Kinich Background</div>
         </div>
-        <!-- WIDE BANNER 2 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/kinich banner.gif" class="item-img" alt="Kinich Banner">
           <div class="sticker-label">Kinich Banner</div>
         </div>
-        <!-- CARD 7 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/Color_splash_opl.png" class="item-img" alt="Mualani">
           <div class="sticker-label">Mualani Cover</div>
         </div>
-        <!-- WIDE DIVIDER -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/Divider TRIO.gif" class="item-img" alt="Divider">
           <div class="sticker-label">Scaramouche, Raiden, Thoma Divider</div>
         </div>
-        <!-- CARD 8 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/cover image.png" class="item-img" alt="Demon Slayer">
           <div class="sticker-label">Rengoku Background</div>
         </div>
-        <!-- LOGO 1 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/HBH LOGO.png" class="item-img" alt="Hazbin">
           <div class="sticker-label">Hazbin Hotel Logo</div>
         </div>
-        <!-- LOGO 2 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/HBH LOGO (1).png" class="item-img" alt="Lovers">
           <div class="sticker-label">Lovers Point Logo</div>
         </div>
-        <!-- LOGO 3 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/LGBTQ LOGO.png" class="item-img" alt="Pride">
           <div class="sticker-label">LGBTQIA+ Fischl Logo</div>
         </div>
-        <!-- CARD 9 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/scaramouche.png" class="item-img" alt="Scara">
           <div class="sticker-label">Scaramouche Background</div>
         </div>
-        <!-- BANNER 3 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/argenti bg gif 2.gif" class="item-img" alt="Argenti">
           <div class="sticker-label">Argenti Background</div>
         </div>
-        <!-- BANNER 4 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/02 blade bg.png" class="item-img" alt="Blade">
           <div class="sticker-label">Blade Background</div>
         </div>
-        <!-- BANNER 5 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/04 kafka bg.png" class="item-img" alt="Kafka">
           <div class="sticker-label">Kafka Background</div>
         </div>
-        <!-- BANNER 6 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/bg dan heng.gif" class="item-img" alt="Dan Heng">
           <div class="sticker-label">Dan Heng Background</div>
         </div>
-        <!-- BANNER 7 -->
         <div class="item-card" onclick="openLightbox(this)">
           <img src="Portfolio images/06 jing yuan bg.png" class="item-img" alt="Jing Yuan">
           <div class="sticker-label">Jing Yuan Background</div>
@@ -709,7 +665,6 @@
       </div>
     </section>
 
-    <!-- SHELF 2: ABOUT ME (Shop Journal Style) -->
     <section id="shelf-about" class="section-display">
       <div class="journal-container">
         
@@ -746,11 +701,10 @@
             <p>I can work independently or as part of a team. I aim to be friendly, approachable, and professional, so collaboration is smooth and enjoyable.</p>
           </div>
 
-          <!-- Ko-fi Inline Button -->
           <div class="qa-block" style="text-align:center; border-top: 2px dashed var(--wood-light); padding-top: 20px;">
-             <p>Like my work? Consider supporting me!</p>
+             <p>Like my works? Consider supporting me!</p>
              <a href="https://ko-fi.com/yunamira" target="_blank" class="kofi-inline-btn">
-               ☕ Support My Art on Ko-fi
+               ☕ Support me on Ko-fi
              </a>
           </div>
 
@@ -759,13 +713,11 @@
       </div>
     </section>
 
-    <!-- SHELF 3: RESUME -->
     <section id="shelf-resume" class="section-display">
       <div class="resume-board">
         <div class="washi-tape"></div>
         <div class="resume-paper">
           
-          <!-- Resume Header -->
           <div class="res-header">
             <img src="Portfolio images/Untitled design (5).png" class="res-avatar" alt="Sophia">
             <div class="res-title">
@@ -780,7 +732,6 @@
             </div>
           </div>
 
-          <!-- Resume Grid -->
           <div class="resume-grid">
             <aside class="res-sidebar">
               <div class="res-section">
@@ -868,7 +819,6 @@
       </div>
     </section>
 
-    <!-- SHELF 4: FAQs (Card Board Style) -->
     <section id="shelf-faq" class="section-display">
       <div style="text-align:center; margin-bottom: 2rem;">
         <h2 style="font-family:'Yuji Syuku'; color:var(--wood-dark); font-size: 2.5rem;">❓ Frequently Asked Questions</h2>
@@ -876,49 +826,41 @@
       
       <div class="faq-grid">
         
-        <!-- FAQ 1 -->
         <div class="faq-card">
           <div class="faq-q">What services do you offer?</div>
           <div class="faq-a">I create social media posts, banners, covers, profile graphics, backgrounds, dividers, logos, and basic website visuals and layouts.</div>
         </div>
 
-        <!-- FAQ 2 -->
         <div class="faq-card">
           <div class="faq-q">Do you do animated designs?</div>
           <div class="faq-a">Yes! I can make motion graphics and animated social media visuals in addition to static designs.</div>
         </div>
 
-        <!-- FAQ 3 -->
         <div class="faq-card">
           <div class="faq-q">Are you experienced with web design?</div>
           <div class="faq-a">I have experience creating simple website layouts and visuals using tools like Visual Studio Code, Canva, Google Sites, and Carrd.</div>
         </div>
 
-        <!-- FAQ 4 -->
         <div class="faq-card">
           <div class="faq-q">Can you handle multiple projects at once?</div>
           <div class="faq-a">Yes! I’m used to managing multiple tasks while keeping deadlines and quality in check.</div>
         </div>
 
-        <!-- FAQ 5 -->
         <div class="faq-card">
           <div class="faq-q">Do you accept freelance projects?</div>
           <div class="faq-a">Absolutely! I’ve been working as a freelance graphic designer since 2020 and continue to welcome new freelance opportunities.</div>
         </div>
 
-        <!-- FAQ 6 -->
         <div class="faq-card">
           <div class="faq-q">What industries or platforms do you design for?</div>
           <div class="faq-a">I mainly design for digital platforms, especially social media and online branding, but I can adapt my skills to other visual design needs as well.</div>
         </div>
 
-        <!-- FAQ 7 -->
         <div class="faq-card">
           <div class="faq-q">How do you ensure quality in your work?</div>
           <div class="faq-a">I pay close attention to detail, follow clear design structures, and communicate with clients throughout the process to make sure everything meets expectations.</div>
         </div>
 
-        <!-- FAQ 8 -->
         <div class="faq-card">
           <div class="faq-q">What languages do you speak?</div>
           <div class="faq-a">I speak English and have some knowledge of Japanese and Chinese.</div>
@@ -929,7 +871,6 @@
 
   </main>
 
-  <!-- FLOATING KO-FI BUTTON -->
   <a href="https://ko-fi.com/yunamira" target="_blank" class="kofi-float">
     <span class="kofi-icon">☕</span>
     <span>Buy me a Coffee</span>
@@ -940,7 +881,6 @@
   </footer>
 
   <script>
-    // Navigation Logic
     function switchShelf(shelfId, btn) {
       document.querySelectorAll('.section-display').forEach(el => el.classList.remove('active'));
       document.querySelectorAll('.nav-tag').forEach(el => el.classList.remove('active'));
@@ -949,12 +889,10 @@
       btn.classList.add('active');
     }
 
-    // Lightbox Logic
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
 
     function openLightbox(element) {
-      // Find the image inside the clicked card
       const img = element.querySelector('img');
       if (img) {
         lightboxImg.src = img.src;
